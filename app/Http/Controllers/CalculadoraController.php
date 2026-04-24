@@ -18,7 +18,12 @@ class CalculadoraController extends Controller
     public function descargarInforme(CalculadoraSolicitud $solicitud, InformeGenerator $generator): BinaryFileResponse
     {
         abort_unless($solicitud->estado === 'completado', 404);
-        $path = $generator->generar($solicitud);
+        try {
+            $path = $generator->generar($solicitud);
+        } catch (\Throwable $e) {
+            report($e);
+            abort(500, 'Error generando el informe. Intente nuevamente.');
+        }
         return response()->download(storage_path("app/public/{$path}"), "informe-solar-{$solicitud->id}.pdf");
     }
 }
