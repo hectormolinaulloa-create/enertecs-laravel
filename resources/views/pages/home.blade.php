@@ -11,28 +11,16 @@
     function heroSection() {
         return {
             init() {
-                // Carga la API de YouTube de forma asíncrona
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-                const tag = document.createElement('script')
-                tag.src = 'https://www.youtube.com/iframe_api'
-                document.head.appendChild(tag)
-
-                window.onYouTubeIframeAPIReady = () => {
-                    new YT.Player('hero-yt-iframe', {
-                        videoId: 'tpwOV-doUCc',
-                        playerVars: {
-                            autoplay: 1, mute: 1, loop: 1, controls: 0,
-                            showinfo: 0, rel: 0, iv_load_policy: 3,
-                            playlist: 'tpwOV-doUCc',
-                        },
-                        events: {
-                            onReady: (e) => {
-                                e.target.playVideo()
-                                document.getElementById('hero-yt').style.opacity = '1'
-                            }
-                        }
-                    })
-                }
+                const iframe = document.getElementById('hero-yt-iframe')
+                const container = document.getElementById('hero-yt')
+                if (!iframe || !container) return
+                iframe.src = 'https://www.youtube.com/embed/tpwOV-doUCc' +
+                    '?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0' +
+                    '&iv_load_policy=3&playlist=tpwOV-doUCc&enablejsapi=1'
+                iframe.addEventListener('load', () => {
+                    container.style.opacity = '1'
+                }, { once: true })
             }
         }
     }
