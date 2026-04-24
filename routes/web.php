@@ -10,6 +10,11 @@ Route::get('/servicios', [PaginaController::class, 'servicios'])->name('servicio
 Route::get('/servicios/{slug}', [PaginaController::class, 'servicio'])->name('servicio');
 Route::get('/calculadora/solar-ongrid', [PaginaController::class, 'calculadora'])->name('calculadora');
 
+// API VRM chart data
+Route::get('/api/vrm/chart', [CalculadoraController::class, 'vrmChart'])
+     ->middleware('throttle:30,1')
+     ->name('vrm.chart');
+
 // Endpoints de la calculadora
 Route::middleware('throttle:10,1')->group(function () {
     Route::get('/calculadora/job-status/{solicitud}', [CalculadoraController::class, 'jobStatus'])

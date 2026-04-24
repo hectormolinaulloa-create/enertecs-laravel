@@ -1,5 +1,14 @@
 @extends('layouts.app')
 @section('title', 'Enertecs — Ingeniería Eléctrica en Patagonia')
+
+@push('head')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+@endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+@endpush
+
 @section('content')
 
 {{-- Hero --}}
@@ -20,12 +29,7 @@
 </section>
 
 {{-- VRM Dashboard --}}
-<section class="py-16 bg-[#060e1f]">
-    <div class="max-w-7xl mx-auto px-6">
-        <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-6">Sistema de monitoreo en vivo</p>
-        @livewire('vrm-dashboard')
-    </div>
-</section>
+@livewire('vrm-dashboard')
 
 {{-- Servicios preview --}}
 <section class="py-20 bg-[#0a1628]">

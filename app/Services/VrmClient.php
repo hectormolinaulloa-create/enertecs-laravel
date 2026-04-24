@@ -7,31 +7,67 @@ use Illuminate\Support\Facades\Http;
 class VrmClient
 {
     private string $token;
-    private string $baseUrl = 'https://vrmapi.victronenergy.com/v2';
+    private string $base = 'https://vrmapi.victronenergy.com/v2';
+    private ?int $idUser = null;
 
     public function __construct()
     {
-        $this->token = config('services.vrm.token');
+        $this->token = config('services.vrm.token', '');
     }
 
-    public function getInstallationOverview(int $siteId): array
+    public function login(): int
     {
-        $response = Http::withToken($this->token)
-            ->get("{$this->baseUrl}/installations/{$siteId}/overview");
-        $response->throw();
-        return $response->json('records', []);
+        $res = $this->req('GET', '/users/me');
+        $this->idUser = $res['user']['id'] ?? null;
+        if (!$this->idUser) {
+            throw new \RuntimeException('VRM login: no se obtuvo idUser');
+        }
+        return $this->idUser;
     }
 
-    public function getChartData(int $siteId, string $type, int $interval = 900): array
+    public function getInstallations(int $idUser): array
     {
-        $response = Http::withToken($this->token)
-            ->get("{$this->baseUrl}/installations/{$siteId}/stats", [
-                'type'     => $type,
-                'interval' => $interval,
-                'start'    => now()->subHours(24)->timestamp,
-                'end'      => now()->timestamp,
-            ]);
+        return $this->req('GET', "/users/{$idUser}/installations", ['extended' => 1])['records'] ?? [];
+    }
+
+    public function getOverallStats(int $siteId): array
+    {
+        return $this->req('GET', "/installations/{$siteId}/overallstats", [
+            'type' => 'kwh', 'interval' => 'days',
+        ])['records'] ?? [];
+    }
+
+    public function getDailyStats(int $siteId, int $start, int $end): array
+    {
+        return $this->req('GET', "/installations/{$siteId}/stats", [
+            'type' => 'kwh', 'interval' => 'days', 'start' => $start, 'end' => $end,
+        ])['records'] ?? [];
+    }
+
+    public function getHourlyStats(int $siteId, int $start, int $end): array
+    {
+        return $this->req('GET', "/installations/{$siteId}/stats", [
+            'type' => 'kwh', 'interval' => 'hours', 'start' => $start, 'end' => $end,
+        ])['records'] ?? [];
+    }
+
+    public function getStatusWidget(int $siteId): array
+    {
+        return $this->req('GET', "/installations/{$siteId}/widgets/Status")['records'] ?? [];
+    }
+
+    public function getDiagnostics(int $siteId): array
+    {
+        return $this->req('GET', "/installations/{$siteId}/diagnostics")['records'] ?? [];
+    }
+
+    private function req(string $method, string $path, array $query = []): array
+    {
+        $response = Http::withHeaders(['X-Authorization' => "Token {$this->token}"])
+            ->timeout(15)
+            ->{strtolower($method)}($this->base . $path, $query);
+
         $response->throw();
-        return $response->json('records', []);
+        return $response->json() ?? [];
     }
 }
