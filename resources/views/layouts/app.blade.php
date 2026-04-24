@@ -14,14 +14,16 @@
 
     {{-- Navbar --}}
     <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0a1628]/90 backdrop-blur border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
-            <a href="/" class="font-black tracking-widest text-sm text-white">ENERTECS</a>
-            <div class="hidden md:flex items-center gap-8 text-xs font-bold tracking-widest text-white/60">
-                <a href="/servicios" class="hover:text-white transition-colors">SERVICIOS</a>
-                <a href="/experiencia" class="hover:text-white transition-colors">EXPERIENCIA</a>
-                <a href="/nosotros" class="hover:text-white transition-colors">NOSOTROS</a>
-                <a href="/calculadora/solar-ongrid" class="hover:text-[#0D9488] transition-colors">CALCULADORA</a>
-                <a href="/#contacto" class="bg-[#0067FF] text-white px-4 py-2 rounded-lg hover:bg-[#0050CC] transition-colors">CONTACTO</a>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            <a href="/">
+                <img src="/logo.png" alt="Enertecs" width="130" height="30" style="object-fit:contain">
+            </a>
+            <div class="hidden sm:flex items-center gap-6 text-sm font-medium text-white/70">
+                <a href="/servicios" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Servicios</a>
+                <a href="/experiencia" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Experiencia</a>
+                <a href="/nosotros" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Nosotros</a>
+                <a href="/calculadora/solar-ongrid" class="hover:text-[#0D9488] transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Calculadora</a>
+                <a href="/#contacto" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Contacto</a>
             </div>
         </div>
     </nav>
@@ -31,12 +33,47 @@
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-[#060e1f] border-t border-white/5 py-12">
-        <div class="max-w-7xl mx-auto px-6 text-center text-white/30 text-xs">
-            <div class="w-16 h-px bg-[#0D9488] mx-auto mb-6"></div>
-            <p class="font-black tracking-widest text-white/60 mb-2">ENERTECS SpA</p>
-            <p>Ingeniería Eléctrica · Punta Arenas, Chile</p>
-            <p class="mt-4">© {{ date('Y') }} Enertecs SpA — Todos los derechos reservados</p>
+    <footer class="bg-[#060e1f] border-t border-white/5 pt-14 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+                {{-- Col 1: Logo + descripción --}}
+                <div>
+                    <a href="/" class="inline-flex items-center mb-5">
+                        <img src="/logo.png" alt="Enertecs" width="120" height="28" style="object-fit:contain">
+                    </a>
+                    <p class="text-white/60 text-sm leading-relaxed max-w-xs">
+                        Ingeniería eléctrica integral de alto valor en las regiones de Magallanes y Aysén.
+                    </p>
+                    <div class="mt-6 w-10 h-0.5 bg-[#0D9488]" aria-hidden="true"></div>
+                </div>
+
+                {{-- Col 2: Navegación --}}
+                <div>
+                    <h4 class="text-white/70 font-semibold text-xs mb-4 uppercase tracking-widest">Navegación</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="/servicios" class="text-white/60 hover:text-white text-sm transition-colors">Servicios</a></li>
+                        <li><a href="/experiencia" class="text-white/60 hover:text-white text-sm transition-colors">Experiencia</a></li>
+                        <li><a href="/nosotros" class="text-white/60 hover:text-white text-sm transition-colors">Nosotros</a></li>
+                        <li><a href="/#contacto" class="text-white/60 hover:text-white text-sm transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+
+                {{-- Col 3: Contacto --}}
+                <div>
+                    <h4 class="text-white/70 font-semibold text-xs mb-4 uppercase tracking-widest">Contacto</h4>
+                    <ul class="space-y-2.5">
+                        <li><a href="mailto:contacto@enertecs.cl" class="text-white/60 hover:text-white text-sm transition-colors">contacto@enertecs.cl</a></li>
+                        <li><a href="tel:+56612222316" class="text-white/60 hover:text-white text-sm transition-colors">+56 61 2 222 316 / 226 048</a></li>
+                        <li class="text-white/60 text-sm">Punta Arenas, Magallanes, Chile</li>
+                    </ul>
+                </div>
+            </div>
+
+            {{-- Copyright --}}
+            <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <p class="text-white/50 text-xs">© {{ date('Y') }} Enertecs. Todos los derechos reservados.</p>
+                <p class="text-white/35 text-xs">Ingeniería Eléctrica · Magallanes · Aysén</p>
+            </div>
         </div>
     </footer>
 
