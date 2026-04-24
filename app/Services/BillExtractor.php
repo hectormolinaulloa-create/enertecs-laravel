@@ -36,6 +36,10 @@ PROMPT;
 
     public function extract(string $pdfPath): array
     {
+        if (!file_exists($pdfPath) || !is_readable($pdfPath)) {
+            throw new \InvalidArgumentException("PDF no encontrado o no legible: {$pdfPath}");
+        }
+
         $base64 = base64_encode(file_get_contents($pdfPath));
 
         $response = Http::withHeaders([
@@ -73,6 +77,11 @@ PROMPT;
             throw new \RuntimeException('Respuesta de Claude no contiene JSON válido.');
         }
 
-        return json_decode($matches[0], true);
+        $data = json_decode($matches[0], true);
+        if (!is_array($data)) {
+            throw new \RuntimeException('JSON de Claude no es válido o está malformado.');
+        }
+
+        return $data;
     }
 }

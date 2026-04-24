@@ -69,6 +69,7 @@ class OngridCalculator
      *   precio_kwh_clp: float,
      *   costo_referencial_kwp_clp: float
      * }
+     * @throws \RuntimeException Si no hay inversor compatible disponible.
      */
     public function calcular(array $input): array
     {
@@ -77,8 +78,8 @@ class OngridCalculator
         $tipo       = $input['tipo_medidor'];
         $panel      = $input['panel'];
         $inversores = $input['inversores'];
-        $precioKwh  = (float) $input['precio_kwh_clp'];
-        $costoKwp   = (float) $input['costo_referencial_kwp_clp'];
+        $precioKwh      = (float) $input['precio_kwh_clp'];
+        $costoPorPanel  = (float) $input['costo_referencial_kwp_clp']; // precio por panel (nombre del campo heredado del TS)
 
         $hsp = self::HSP[$region] ?? 4.5;
 
@@ -154,7 +155,7 @@ class OngridCalculator
         // Producción y economía
         $produccionMensual = $potenciaReal * $hsp * 30 * $pr;
         $ahorroMensual     = $produccionMensual * $precioKwh;
-        $costoSistema      = $nPaneles * $costoKwp;
+        $costoSistema      = $nPaneles * $costoPorPanel;
         $roiAnos           = $ahorroMensual > 0 ? $costoSistema / ($ahorroMensual * 12) : 0;
         $co2KgAnual        = $produccionMensual * 12 * self::FACTOR_CO2;
         $areaM2            = $nPaneles * (($panel['largo_mm'] ?? 1722) / 1000) * (($panel['ancho_mm'] ?? 1134) / 1000);
