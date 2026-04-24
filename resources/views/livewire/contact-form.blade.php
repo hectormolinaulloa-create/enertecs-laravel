@@ -12,19 +12,19 @@
         <form wire:submit="enviar" class="space-y-4">
             <div>
                 <label class="text-white/40 text-xs uppercase tracking-widest">Nombre *</label>
-                <input type="text" wire:model="nombre"
+                <input type="text" wire:model.blur="nombre"
                     class="w-full bg-[#0a1628] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0D9488] focus:outline-none">
                 @error('nombre') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="text-white/40 text-xs uppercase tracking-widest">Email *</label>
-                <input type="email" wire:model="email"
+                <input type="email" wire:model.blur="email"
                     class="w-full bg-[#0a1628] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0D9488] focus:outline-none">
                 @error('email') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label class="text-white/40 text-xs uppercase tracking-widest">Mensaje *</label>
-                <textarea wire:model="mensaje" rows="5"
+                <textarea wire:model.blur="mensaje" rows="5"
                     class="w-full bg-[#0a1628] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0D9488] focus:outline-none"></textarea>
                 @error('mensaje') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>

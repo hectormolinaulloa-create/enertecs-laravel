@@ -1,7 +1,9 @@
 <?php
 namespace App\Livewire;
 use App\Models\Configuracion;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Attributes\Throttle;
 use Livewire\Component;
 
 class ContactForm extends Component
@@ -18,8 +20,10 @@ class ContactForm extends Component
         'mensaje' => 'required|string|min:10|max:2000',
     ];
 
+    #[Throttle(5, 60)]
     public function enviar(): void
     {
+        $this->error = '';
         $this->validate();
         $destino = Configuracion::get('email_contacto', config('mail.from.address'));
 
@@ -35,11 +39,12 @@ class ContactForm extends Component
             $this->reset(['nombre', 'email', 'mensaje']);
             $this->enviado = true;
         } catch (\Throwable $e) {
+            Log::error('ContactForm: error al enviar email', ['exception' => $e->getMessage()]);
             $this->error = 'No se pudo enviar el mensaje. Inténtalo más tarde.';
         }
     }
 
-    public function render()
+    public function render(): \Illuminate\View\View
     {
         return view('livewire.contact-form');
     }
