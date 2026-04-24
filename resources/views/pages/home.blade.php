@@ -160,16 +160,45 @@
 @livewire('vrm-dashboard')
 
 {{-- Servicios preview --}}
-<section class="py-20 bg-[#0a1628]">
-    <div class="max-w-7xl mx-auto px-6">
+@php
+$iconoImagen = [
+    'zap'      => '/images/srv-distribucion.jpg',
+    'activity' => '/images/srv-media-tension.jpg',
+    'wind'     => '/images/srv-hvac.jpg',
+    'network'  => '/images/srv-networking.jpg',
+    'monitor'  => '/images/srv-audio.jpg',
+    'flame'    => '/images/srv-incendios.jpg',
+    'settings' => '/images/srv-industrial.jpg',
+    'git-merge'=> '/images/srv-distribucion.jpg',
+];
+@endphp
+<section id="servicios" class="py-20 bg-[#0a1628]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p class="text-[#0D9488] text-[10px] font-bold uppercase tracking-widest mb-4">Nuestros Servicios</p>
-        <h2 class="text-white font-black text-3xl mb-10" style="font-family: var(--font-heading)">Soluciones a medida</h2>
+        <h2 class="text-white font-black text-3xl mb-10">Soluciones a medida</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach($servicios as $s)
+            @php $img = $iconoImagen[$s->icono] ?? '/images/srv-tableros.jpg'; @endphp
             <a href="/servicios/{{ $s->slug }}"
-               class="bg-[#0d1e3a] border border-white/5 rounded-2xl p-5 hover:border-[#0067FF]/40 transition-colors group">
-                <p class="text-[#0067FF] text-xs font-bold uppercase tracking-widest mb-2 group-hover:text-[#0D9488] transition-colors">{{ $s->icono }}</p>
-                <p class="text-white font-black text-sm">{{ $s->nombre }}</p>
+               class="group relative flex flex-col overflow-hidden rounded-xl hover:scale-[1.02] transition-transform duration-300"
+               style="min-height:260px">
+                <img src="{{ $img }}" alt="{{ $s->titulo }}"
+                     class="absolute inset-0 w-full h-full object-cover transition-all duration-500"
+                     style="filter:brightness(0.5)"
+                     onmouseover="this.style.filter='brightness(0.6)'" onmouseout="this.style.filter='brightness(0.5)'">
+                <div aria-hidden="true" class="absolute inset-0 pointer-events-none"
+                     style="background:linear-gradient(to top,rgba(5,15,35,0.96) 0%,rgba(5,15,35,0.55) 50%,transparent 100%)"></div>
+                <div aria-hidden="true" class="absolute top-0 left-0 right-0 h-0.5"
+                     style="background:linear-gradient(to right,#0D9488,transparent)"></div>
+                <div class="relative flex flex-col flex-1 p-6 mt-auto justify-end">
+                    <h3 class="font-bold text-lg text-white leading-tight mb-2">{{ $s->nombre }}</h3>
+                    @if($s->descripcion)
+                    <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{{ Str::limit($s->descripcion, 100) }}</p>
+                    @endif
+                    <div class="flex items-center gap-1 text-[#0D9488] text-xs font-semibold mt-4">
+                        Ver más <span aria-hidden="true" class="group-hover:translate-x-1 transition-transform inline-block">→</span>
+                    </div>
+                </div>
             </a>
             @endforeach
         </div>
