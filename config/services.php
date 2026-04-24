@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'vrm' => [
+        'token'   => env('VRM_TOKEN'),
+        'site_id' => env('VRM_SITE_ID'),
+    ],
+
 ];
