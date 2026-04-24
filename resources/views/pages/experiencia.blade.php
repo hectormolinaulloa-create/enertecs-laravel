@@ -11,7 +11,7 @@
         <button @click="cat = ''; filtrarMapa('')" :class="cat === '' ? 'bg-[#0067FF] text-white' : 'bg-white/5 text-white/60 hover:text-white'"
             class="px-4 py-2 rounded-lg text-xs font-bold tracking-widest transition-colors">TODOS</button>
         @foreach($proyectos->pluck('categoria')->unique() as $cat)
-        <button @click="cat = '{{ $cat }}'; filtrarMapa('{{ $cat }}')" :class="cat === '{{ $cat }}' ? 'bg-[#0067FF] text-white' : 'bg-white/5 text-white/60 hover:text-white'"
+        <button @click="cat = {{ Illuminate\Support\Js::from($cat) }}; filtrarMapa({{ Illuminate\Support\Js::from($cat) }})" :class="cat === {{ Illuminate\Support\Js::from($cat) }} ? 'bg-[#0067FF] text-white' : 'bg-white/5 text-white/60 hover:text-white'"
             class="px-4 py-2 rounded-lg text-xs font-bold tracking-widest transition-colors">{{ strtoupper($cat) }}</button>
         @endforeach
     </div>
