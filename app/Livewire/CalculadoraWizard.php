@@ -2,6 +2,7 @@
 namespace App\Livewire;
 use App\Jobs\ExtractBillJob;
 use App\Models\CalculadoraSolicitud;
+use App\Models\Configuracion;
 use App\Services\OngridCalculator;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -27,20 +28,31 @@ class CalculadoraWizard extends Component
     {
         $this->validate(['pdf' => 'required|file|mimes:pdf|max:10240']);
 
-        $solicitud = CalculadoraSolicitud::create(['estado' => 'pendiente']);
-        $path      = $this->pdf->store('boletas-tmp', 'local');
-
-        ExtractBillJob::dispatch($solicitud, storage_path("app/{$path}"));
-
-        $this->solicitudId = $solicitud->id;
-        $this->step        = 2;
+        $solicitud = null;
+        try {
+            $solicitud = CalculadoraSolicitud::create(['estado' => 'pendiente']);
+            $path      = $this->pdf->store('boletas-tmp', 'local');
+            ExtractBillJob::dispatch($solicitud, storage_path("app/{$path}"));
+            $this->solicitudId = $solicitud->id;
+            $this->step        = 2;
+        } catch (\Throwable $e) {
+            $solicitud?->delete();
+            $this->error = 'Error al iniciar el análisis. Intenta nuevamente.';
+        }
     }
 
     // Polling: Step 2 → espera que el job complete
     public function checkJobStatus(): void
     {
-        if (!$this->solicitudId) return;
+        if ($this->step !== 2 || !$this->solicitudId) return;
+
         $solicitud = CalculadoraSolicitud::find($this->solicitudId);
+        if (!$solicitud) {
+            $this->error = 'Sesión expirada. Por favor, sube la boleta nuevamente.';
+            $this->step  = 1;
+            return;
+        }
+
         $this->jobEstado = $solicitud->estado;
 
         if ($solicitud->estado === 'completado') {
@@ -68,8 +80,8 @@ class CalculadoraWizard extends Component
                 'tipo_medidor'             => $this->datosBoleta['tipo_medidor'] ?? 'monofasico',
                 'panel'                    => $this->panelDefault(),
                 'inversores'               => $this->inversoresDefault(),
-                'precio_kwh_clp'           => 158,
-                'costo_referencial_kwp_clp'=> 650000,
+                'precio_kwh_clp'           => (float) Configuracion::get('precio_kwh_clp', 158),
+                'costo_referencial_kwp_clp'=> (float) Configuracion::get('costo_kwp_clp', 650000),
             ]);
         } catch (\Throwable $e) {
             $this->error = $e->getMessage();

@@ -12,6 +12,8 @@ class ConfiguracionSeeder extends Seeder
             ['clave' => 'telefono',         'valor' => '+56 61 XXX XXXX'],
             ['clave' => 'vrm_site_id',      'valor' => ''],
             ['clave' => 'nombre_empresa',   'valor' => 'Enertecs SpA'],
+            ['clave' => 'precio_kwh_clp',   'valor' => '158'],
+            ['clave' => 'costo_kwp_clp',    'valor' => '650000'],
         ];
         foreach ($configs as $c) {
             Configuracion::firstOrCreate(['clave' => $c['clave']], $c);
