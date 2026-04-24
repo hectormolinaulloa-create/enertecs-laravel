@@ -1,5 +1,14 @@
 @extends('layouts.app')
 @section('title', 'Experiencia — Enertecs')
+
+@push('head')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+@endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+@endpush
+
 @section('content')
 <section class="min-h-screen bg-[#0a1628] py-12">
   <div class="max-w-7xl mx-auto px-6">
