@@ -42,7 +42,8 @@ class ProyectoResource extends Resource
             Tables\Columns\TextColumn::make('año')->sortable(),
             Tables\Columns\IconColumn::make('activo')->boolean(),
         ])->filters([
-            Tables\Filters\SelectFilter::make('categoria'),
+            Tables\Filters\SelectFilter::make('categoria')
+                ->options(fn() => Proyecto::distinct()->orderBy('categoria')->pluck('categoria', 'categoria')->toArray()),
         ]);
     }
 
