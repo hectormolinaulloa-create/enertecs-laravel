@@ -117,6 +117,22 @@ class CalculadoraWizard extends Component
         $this->step = 5;
     }
 
+    public function reiniciar(): void
+    {
+        $this->step = 1;
+        $this->pdf = null;
+        $this->solicitudId = null;
+        $this->solicitudUuid = '';
+        $this->jobEstado = 'pendiente';
+        $this->datosBoleta = [];
+        $this->resultado = [];
+        $this->nombre = '';
+        $this->email = '';
+        $this->telefono = '';
+        $this->empresa = '';
+        $this->error = '';
+    }
+
     public function render()
     {
         return view('livewire.calculadora-wizard');
