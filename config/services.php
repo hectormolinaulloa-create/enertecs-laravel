@@ -40,4 +40,8 @@ return [
         'site_id' => env('VRM_SITE_ID'),
     ],
 
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
+    ],
+
 ];
