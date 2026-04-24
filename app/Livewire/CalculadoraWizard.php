@@ -11,10 +11,11 @@ class CalculadoraWizard extends Component
 {
     use WithFileUploads;
 
-    public int    $step        = 1;
-    public        $pdf         = null;
-    public ?int   $solicitudId = null;
-    public string $jobEstado   = 'pendiente';
+    public int    $step         = 1;
+    public        $pdf          = null;
+    public ?int   $solicitudId  = null;
+    public string $solicitudUuid = '';
+    public string $jobEstado    = 'pendiente';
     public array  $datosBoleta = [];
     public array  $resultado   = [];
     public string $nombre      = '';
@@ -33,8 +34,9 @@ class CalculadoraWizard extends Component
             $solicitud = CalculadoraSolicitud::create(['estado' => 'pendiente']);
             $path      = $this->pdf->store('boletas-tmp', 'local');
             ExtractBillJob::dispatch($solicitud, storage_path("app/{$path}"));
-            $this->solicitudId = $solicitud->id;
-            $this->step        = 2;
+            $this->solicitudId   = $solicitud->id;
+            $this->solicitudUuid = $solicitud->uuid;
+            $this->step          = 2;
         } catch (\Throwable $e) {
             $solicitud?->delete();
             $this->error = 'Error al iniciar el análisis. Intenta nuevamente.';

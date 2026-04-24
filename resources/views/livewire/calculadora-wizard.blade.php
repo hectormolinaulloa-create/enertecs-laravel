@@ -102,8 +102,8 @@
                 <div><p class="text-white/40 text-xs">Retorno inversión</p><p class="text-white font-black text-xl">{{ number_format($resultado['roi_anos'] ?? 0, 1) }} años</p></div>
             </div>
         </div>
-        @if($solicitudId)
-            <a href="{{ route('calculadora.informe', $solicitudId) }}"
+        @if($solicitudUuid)
+            <a href="{{ route('calculadora.informe', $solicitudUuid) }}"
                class="w-full flex items-center justify-center gap-2 bg-[#0067FF] hover:bg-[#0050CC] text-white font-bold py-3 rounded-xl transition-colors">
                 Descargar informe PDF
             </a>

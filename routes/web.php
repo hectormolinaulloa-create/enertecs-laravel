@@ -20,7 +20,9 @@ Route::middleware('throttle:10,1')->group(function () {
 
 // Ruta temporal de migraciones — eliminar tras primer deploy exitoso
 Route::get('/run-migrations', function (\Illuminate\Http\Request $request) {
+    abort_unless(app()->environment('production'), 404);
+    abort_if(empty(config('app.migration_token')), 404);
     abort_unless($request->get('token') === config('app.migration_token'), 403);
-    \Artisan::call('migrate', ['--force' => true]);
+    \Artisan::call('migrate', ['--seed', '--force' => true]);
     return \Artisan::output();
 })->middleware('throttle:1,60');
