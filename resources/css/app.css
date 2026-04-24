@@ -8,3 +8,14 @@
   --color-surface: #0d1e3a;
   --font-heading: 'Sora', sans-serif;
 }
+
+@layer base {
+  :root {
+    --color-primary: #0067FF;
+    --color-primary-dark: #0050CC;
+    --color-teal: #0D9488;
+    --color-bg-dark: #0a1628;
+    --color-surface: #0d1e3a;
+    --font-heading: 'Sora', sans-serif;
+  }
+}
