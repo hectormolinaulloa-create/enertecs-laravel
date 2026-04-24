@@ -38,4 +38,9 @@ class ExtractBillJob implements ShouldQueue
             }
         }
     }
+
+    public function failed(\Throwable $e): void
+    {
+        $this->solicitud->update(['estado' => 'error']);
+    }
 }
