@@ -13,20 +13,54 @@
 <body class="bg-[#0a1628] text-white antialiased">
 
     {{-- Navbar --}}
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0a1628]/90 backdrop-blur border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-            <a href="/">
+    <header class="fixed top-0 left-0 right-0 z-40 border-b border-white/5 transition-all duration-300"
+            style="background:rgba(10,22,40,0.90);backdrop-filter:blur(12px)"
+            x-data="{ open: false }">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center">
                 <img src="/logo.png" alt="Enertecs" width="130" height="30" style="object-fit:contain">
             </a>
+
+            {{-- Links desktop --}}
             <div class="hidden sm:flex items-center gap-6 text-sm font-medium text-white/70">
-                <a href="/servicios" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Servicios</a>
+                <a href="/#servicios" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Servicios</a>
                 <a href="/experiencia" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Experiencia</a>
                 <a href="/nosotros" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Nosotros</a>
-                <a href="/calculadora/solar-ongrid" class="hover:text-[#0D9488] transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Calculadora</a>
+                <a href="/calculadora/solar-ongrid" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Calculadora</a>
                 <a href="/#contacto" class="hover:text-white transition-colors border-b-2 border-transparent hover:border-[#0D9488] pb-0.5">Contacto</a>
             </div>
+
+            {{-- Hamburger (solo mobile) --}}
+            <button type="button" @click="open = !open"
+                    class="sm:hidden text-white/70 hover:text-white transition-colors p-2 rounded hover:bg-white/5"
+                    :aria-label="open ? 'Cerrar menú' : 'Abrir menú'">
+                <svg x-show="!open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                <svg x-show="open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </nav>
+
+        {{-- Drawer mobile --}}
+        <div x-show="open" x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             class="sm:hidden border-t border-white/5"
+             style="background:rgba(10,22,40,0.97)">
+            <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4">
+                <a href="/#servicios"              @click="open=false" class="text-white/70 hover:text-white text-sm font-medium transition-colors">Servicios</a>
+                <a href="/experiencia"             @click="open=false" class="text-white/70 hover:text-white text-sm font-medium transition-colors">Experiencia</a>
+                <a href="/nosotros"                @click="open=false" class="text-white/70 hover:text-white text-sm font-medium transition-colors">Nosotros</a>
+                <a href="/calculadora/solar-ongrid" @click="open=false" class="text-white/70 hover:text-white text-sm font-medium transition-colors">Calculadora</a>
+                <a href="/#contacto"               @click="open=false" class="text-white/70 hover:text-white text-sm font-medium transition-colors">Contacto</a>
+            </div>
         </div>
-    </nav>
+    </header>
 
     <main class="pt-16">
         @yield('content')

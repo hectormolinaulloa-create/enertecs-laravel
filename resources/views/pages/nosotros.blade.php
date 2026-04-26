@@ -17,7 +17,7 @@
             </div>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight"
                 style="letter-spacing:-0.03em">
-                Enertecs SpA
+                Quiénes Somos
             </h1>
         </div>
     </div>

@@ -7,7 +7,10 @@ class PaginaController extends Controller
 {
     public function home()
     {
-        return view('pages.home', ['servicios' => Servicio::activo()->take(4)->get()]);
+        return view('pages.home', [
+            'servicios'      => Servicio::activo()->get(),
+            'certificaciones' => \App\Models\Certificacion::all(),
+        ]);
     }
 
     public function nosotros()

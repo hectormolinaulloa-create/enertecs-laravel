@@ -1,4 +1,4 @@
-<div id="contacto" class="bg-[#0d1e3a] border border-white/5 rounded-2xl p-8">
+<div class="bg-[#0d1e3a] border border-white/5 rounded-2xl p-8">
     @if($enviado)
         <div class="text-center py-8">
             <p class="text-[#0D9488] font-bold text-lg mb-2">¡Mensaje enviado!</p>
