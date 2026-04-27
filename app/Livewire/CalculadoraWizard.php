@@ -2,10 +2,12 @@
 namespace App\Livewire;
 
 use App\Jobs\ExtractBillJob;
+use App\Mail\NuevoLeadSolarMail;
 use App\Models\CalculadoraSolicitud;
 use App\Models\Configuracion;
 use App\Services\GoodweCatalog;
 use App\Services\OngridCalculator;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -105,6 +107,10 @@ class CalculadoraWizard extends Component
         ]);
 
         $this->step = 4;
+
+        if ($solicitud) {
+            Mail::to('felipe.araya@enertecs.cl')->queue(new NuevoLeadSolarMail($solicitud));
+        }
     }
 
     public function reiniciar(): void
