@@ -14,7 +14,7 @@ return new class extends Migration
             $table->uuid('uuid')->nullable()->unique()->after('id');
         });
 
-        DB::table('calculadora_solicitudes')->whereNull('uuid')->each(function ($row) {
+        DB::table('calculadora_solicitudes')->whereNull('uuid')->orderBy('id')->each(function ($row) {
             DB::table('calculadora_solicitudes')
                 ->where('id', $row->id)
                 ->update(['uuid' => Str::uuid()]);
