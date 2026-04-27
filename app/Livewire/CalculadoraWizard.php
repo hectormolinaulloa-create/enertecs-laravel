@@ -1,9 +1,11 @@
 <?php
 namespace App\Livewire;
+
 use App\Jobs\ExtractBillJob;
 use App\Models\CalculadoraSolicitud;
 use App\Models\Configuracion;
 use App\Services\OngridCalculator;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -11,18 +13,14 @@ class CalculadoraWizard extends Component
 {
     use WithFileUploads;
 
-    public int    $step         = 1;
-    public        $pdf          = null;
-    public ?int   $solicitudId  = null;
+    public int    $step          = 1;
+    public        $pdf           = null;
+    public ?int   $solicitudId   = null;
     public string $solicitudUuid = '';
-    public string $jobEstado    = 'pendiente';
-    public array  $datosBoleta = [];
-    public array  $resultado   = [];
-    public string $nombre      = '';
-    public string $email       = '';
-    public string $telefono    = '';
-    public string $empresa     = '';
-    public string $error       = '';
+    public string $jobEstado     = 'pendiente';
+    public array  $datosBoleta   = [];
+    public array  $resultado     = [];
+    public string $error         = '';
 
     // Step 1 → sube PDF y despacha job
     public function subirPdf(): void
@@ -33,7 +31,7 @@ class CalculadoraWizard extends Component
         try {
             $solicitud = CalculadoraSolicitud::create(['estado' => 'pendiente']);
             $path      = $this->pdf->store('boletas-tmp', 'local');
-            ExtractBillJob::dispatch($solicitud, storage_path("app/{$path}"));
+            ExtractBillJob::dispatch($solicitud, Storage::disk('local')->path($path));
             $this->solicitudId   = $solicitud->id;
             $this->solicitudUuid = $solicitud->uuid;
             $this->step          = 2;
@@ -43,13 +41,13 @@ class CalculadoraWizard extends Component
         }
     }
 
-    // Polling: Step 2 → espera que el job complete
+    // Step 2 → polling hasta que el job complete
     public function checkJobStatus(): void
     {
-        if ($this->step !== 2 || !$this->solicitudId) return;
+        if ($this->step !== 2 || ! $this->solicitudId) return;
 
         $solicitud = CalculadoraSolicitud::find($this->solicitudId);
-        if (!$solicitud) {
+        if (! $solicitud) {
             $this->error = 'Sesión expirada. Por favor, sube la boleta nuevamente.';
             $this->step  = 1;
             return;
@@ -66,24 +64,26 @@ class CalculadoraWizard extends Component
         }
     }
 
-    // Step 3 → confirma datos, calcula resultado
+    // Step 3 → confirma datos del cliente + calcula
     public function confirmarDatos(): void
     {
         $this->validate([
-            'datosBoleta.consumo_kwh' => 'required|numeric|min:1',
-            'datosBoleta.region'      => 'required|string',
+            'datosBoleta.nombre_cliente' => 'required|string|max:100',
+            'datosBoleta.region'         => 'required|string',
+            'datosBoleta.telefono'       => 'required|string|max:20',
+            'datosBoleta.email'          => 'required|email:rfc|max:150',
         ]);
 
         try {
-            $calc    = app(OngridCalculator::class);
+            $calc           = app(OngridCalculator::class);
             $this->resultado = $calc->calcular([
-                'consumo_kwh'              => (float) $this->datosBoleta['consumo_kwh'],
-                'region'                   => $this->datosBoleta['region'] ?? 'Metropolitana de Santiago',
-                'tipo_medidor'             => $this->datosBoleta['tipo_medidor'] ?? 'monofasico',
-                'panel'                    => $this->panelDefault(),
-                'inversores'               => $this->inversoresDefault(),
-                'precio_kwh_clp'           => (float) Configuracion::get('precio_kwh_clp', 158),
-                'costo_referencial_kwp_clp'=> (float) Configuracion::get('costo_kwp_clp', 650000),
+                'consumo_kwh'               => (float) ($this->datosBoleta['consumo_efectivo'] ?? $this->datosBoleta['consumo_kwh'] ?? 0),
+                'region'                    => $this->datosBoleta['region'] ?? 'Metropolitana de Santiago',
+                'tipo_medidor'              => $this->datosBoleta['tipo_medidor'] ?? 'monofasico',
+                'panel'                     => $this->panelDefault(),
+                'inversores'                => $this->inversoresDefault(),
+                'precio_kwh_clp'            => (float) ($this->datosBoleta['precio_kwh_clp'] ?? Configuracion::get('precio_kwh_clp', 158)),
+                'costo_referencial_kwp_clp' => (float) Configuracion::get('costo_kwp_clp', 650000),
             ]);
         } catch (\Throwable $e) {
             $this->error = $e->getMessage();
@@ -91,6 +91,10 @@ class CalculadoraWizard extends Component
         }
 
         CalculadoraSolicitud::find($this->solicitudId)?->update([
+            'nombre'       => $this->datosBoleta['nombre_cliente'] ?? '',
+            'email'        => $this->datosBoleta['email'] ?? '',
+            'telefono'     => $this->datosBoleta['telefono'] ?? '',
+            'empresa'      => $this->datosBoleta['empresa'] ?? '',
             'datos_boleta' => $this->datosBoleta,
             'resultado'    => $this->resultado,
         ]);
@@ -98,39 +102,16 @@ class CalculadoraWizard extends Component
         $this->step = 4;
     }
 
-    // Step 4 → guarda contacto
-    public function guardarContacto(): void
-    {
-        $this->validate([
-            'nombre'   => 'required|string|max:100',
-            'email'    => 'nullable|email:rfc|max:150',
-            'telefono' => 'required|string|max:20',
-        ]);
-
-        CalculadoraSolicitud::find($this->solicitudId)?->update([
-            'nombre'   => $this->nombre,
-            'email'    => $this->email,
-            'telefono' => $this->telefono,
-            'empresa'  => $this->empresa,
-        ]);
-
-        $this->step = 5;
-    }
-
     public function reiniciar(): void
     {
-        $this->step = 1;
-        $this->pdf = null;
-        $this->solicitudId = null;
+        $this->step          = 1;
+        $this->pdf           = null;
+        $this->solicitudId   = null;
         $this->solicitudUuid = '';
-        $this->jobEstado = 'pendiente';
-        $this->datosBoleta = [];
-        $this->resultado = [];
-        $this->nombre = '';
-        $this->email = '';
-        $this->telefono = '';
-        $this->empresa = '';
-        $this->error = '';
+        $this->jobEstado     = 'pendiente';
+        $this->datosBoleta   = [];
+        $this->resultado     = [];
+        $this->error         = '';
     }
 
     public function render()
@@ -138,7 +119,6 @@ class CalculadoraWizard extends Component
         return view('livewire.calculadora-wizard');
     }
 
-    // ── Helpers datos de equipos por defecto ──────────────────────────────
     private function panelDefault(): array
     {
         return [
