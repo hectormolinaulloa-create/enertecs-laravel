@@ -54,4 +54,13 @@ class OngridCalculatorTest extends TestCase
         $result = app(OngridCalculator::class)->calcular($this->input());
         $this->assertGreaterThanOrEqual(0, $result['costo_con_solar_clp']);
     }
+
+    public function test_porcentaje_reduccion_es_cero_cuando_consumo_es_cero(): void
+    {
+        $input = $this->input();
+        $input['consumo_kwh'] = 0;
+        $result = app(OngridCalculator::class)->calcular($input);
+        $this->assertEquals(0, $result['porcentaje_reduccion']);
+        $this->assertEquals(0, $result['costo_sin_solar_clp']);
+    }
 }
