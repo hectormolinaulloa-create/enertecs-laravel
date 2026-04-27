@@ -4,6 +4,7 @@ namespace App\Livewire;
 use App\Jobs\ExtractBillJob;
 use App\Models\CalculadoraSolicitud;
 use App\Models\Configuracion;
+use App\Services\GoodweCatalog;
 use App\Services\OngridCalculator;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -132,11 +133,6 @@ class CalculadoraWizard extends Component
 
     private function inversoresDefault(): array
     {
-        return [[
-            'id' => 'default', 'marca' => 'Growatt', 'modelo' => 'MIN 6000TL-X',
-            'potencia_kw' => 6.0, 'fases' => 'monofasico', 'num_mppt' => 2,
-            'v_mppt_min' => 80, 'v_mppt_max' => 600, 'corriente_max_dc' => 25,
-            'potencia_max_dc_kw' => 8.0, 'eficiencia_max_pct' => 97.0, 'activo' => true,
-        ]];
+        return GoodweCatalog::inversores();
     }
 }

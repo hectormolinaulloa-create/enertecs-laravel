@@ -105,43 +105,58 @@ class OngridCalculator
 
         // Selección de inversor
         $potenciaAcMin = $potenciaReal * 0.80;
-        $aptos = array_filter($inversores, fn($i) =>
+        $aptos = array_values(array_filter($inversores, fn($i) =>
             ($i['fases'] ?? '') === $tipo &&
             ($i['activo'] ?? true) &&
             ($i['potencia_kw'] ?? 0) >= $potenciaAcMin
-        );
+        ));
         usort($aptos, fn($a, $b) => ($a['potencia_kw'] ?? 0) <=> ($b['potencia_kw'] ?? 0));
 
+        // Cuando ningún inversor cubre la potencia requerida, usar el más grande en paralelo
+        $nInversores = 1;
         if (empty($aptos)) {
-            throw new \RuntimeException("No hay inversor {$tipo} con potencia AC ≥ " . round($potenciaAcMin, 2) . " kW disponible.");
+            $todosDelTipo = array_values(array_filter($inversores, fn($i) =>
+                ($i['fases'] ?? '') === $tipo && ($i['activo'] ?? true)
+            ));
+            if (empty($todosDelTipo)) {
+                throw new \RuntimeException("No hay inversores {$tipo} disponibles en el catálogo.");
+            }
+            usort($todosDelTipo, fn($a, $b) => ($b['potencia_kw'] ?? 0) <=> ($a['potencia_kw'] ?? 0));
+            $inversorMax = $todosDelTipo[0];
+            $nInversores = (int) ceil($potenciaAcMin / max(0.1, $inversorMax['potencia_kw'] ?? 1));
+            $aptos       = [$inversorMax];
         }
 
         $inversor         = null;
         $panelesPorString = 1;
         $nStrings         = 1;
 
+        // Para multi-inversor: cada unidad maneja n_paneles / nInversores paneles
+        $panelesPorInversor = (int) ceil($nPaneles / $nInversores);
+
         foreach ($aptos as $candidato) {
             $sinDatosElectricos = ($panel['v_oc'] ?? 0) == 0 || ($panel['v_mpp'] ?? 0) == 0;
 
             if ($sinDatosElectricos) {
                 $inversor         = $candidato;
-                $panelesPorString = $nPaneles;
-                $nStrings         = 1;
+                $panelesPorString = $panelesPorInversor;
+                $nStrings         = $nInversores;
                 break;
             }
 
             $pxs = $this->calcPanelesXString($panel, $candidato);
             if ($pxs === 0) continue;
 
-            $stringsNecesarios = (int) ceil($nPaneles / $pxs);
+            $stringsNecesarios = (int) ceil($panelesPorInversor / $pxs);
             $corrientePorMppt  = ($panel['i_sc'] ?? 0) * ceil($stringsNecesarios / max(1, $candidato['num_mppt'] ?? 1));
 
             if ($corrientePorMppt > ($candidato['corriente_max_dc'] ?? 999) * 1.05) continue;
-            if (($candidato['potencia_max_dc_kw'] ?? 0) > 0 && $potenciaReal > $candidato['potencia_max_dc_kw']) continue;
+            $potenciaRealPorInversor = $potenciaReal / $nInversores;
+            if (($candidato['potencia_max_dc_kw'] ?? 0) > 0 && $potenciaRealPorInversor > $candidato['potencia_max_dc_kw']) continue;
 
             $inversor         = $candidato;
             $panelesPorString = $pxs;
-            $nStrings         = $stringsNecesarios;
+            $nStrings         = $stringsNecesarios * $nInversores;
             break;
         }
 
@@ -166,6 +181,7 @@ class OngridCalculator
             'panel'                  => $panel,
             'potencia_real_kwp'      => round($potenciaReal, 4),
             'inversor'               => $inversor,
+            'n_inversores'           => $nInversores,
             'paneles_por_string'     => $panelesPorString,
             'n_strings'              => $nStrings,
             'produccion_mensual_kwh' => round($produccionMensual, 2),
