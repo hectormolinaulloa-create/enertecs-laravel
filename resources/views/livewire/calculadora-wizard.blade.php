@@ -2,9 +2,8 @@
 
     {{-- Barra de progreso --}}
     @php
-        $stepLabels = ['Boleta', 'Datos', 'Contacto', 'Resultado'];
-        // mapea pasos internos (1-5) al índice visible (0-3)
-        $stepIdx = match($step) { 1, 2 => 0, 3 => 1, 4 => 2, 5 => 3, default => 0 };
+        $stepLabels = ['Boleta', 'Datos', 'Resultado'];
+        $stepIdx = match($step) { 1, 2 => 0, 3 => 1, 4 => 2, default => 0 };
     @endphp
     <div class="border-b border-white/5 bg-[#0d1e3a]">
         <div class="max-w-2xl mx-auto px-4 py-4 flex justify-between">
@@ -49,15 +48,14 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-4 gap-2">
+            <div class="grid grid-cols-3 gap-2">
                 @foreach([
                     ['icon' => '📤', 'label' => "Suba\nsu boleta"],
                     ['icon' => '✏️', 'label' => "Confirme\nsus datos"],
-                    ['icon' => '📲', 'label' => "Ingrese\nsu contacto"],
                     ['icon' => '📊', 'label' => "Reciba\nsu informe"],
                 ] as $i => $s)
                 <div class="relative flex flex-col items-center text-center gap-2 bg-[#0d1e3a] border border-white/10 rounded-xl py-4 px-2">
-                    @if($i < 3)
+                    @if($i < 2)
                     <span class="absolute top-1/2 -translate-y-1/2 text-white/20 text-xs z-10" style="right:-6px">›</span>
                     @endif
                     <span class="text-3xl">{{ $s['icon'] }}</span>
@@ -85,8 +83,7 @@
                     class="border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all"
                     :class="dragging ? 'border-[#0067FF] bg-[#0067FF]/10' : 'border-white/20 hover:border-white/40'">
 
-                    <input x-ref="fileInput" type="file" wire:model="pdf" accept=".pdf" class="hidden"
-                           id="pdf-input">
+                    <input x-ref="fileInput" type="file" wire:model="pdf" accept=".pdf" class="hidden" id="pdf-input">
 
                     <div wire:loading wire:target="subirPdf" class="space-y-3">
                         <div class="w-8 h-8 border-2 border-[#0067FF] border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -121,37 +118,106 @@
     </div>
     @endif
 
-    {{-- Step 3: Confirmar datos --}}
+    {{-- Step 3: Confirma datos del cliente --}}
     @if($step === 3)
     <div class="max-w-2xl mx-auto py-12 px-6">
-        <h2 class="text-white font-black text-xl mb-6">Confirma tus datos</h2>
+        <h2 class="text-white font-black text-xl mb-2">Confirma tus datos</h2>
+        <p class="text-white/40 text-sm mb-6">Hemos extraído estos datos de tu boleta. Revisa y completa lo que falte.</p>
+
+        @if($errors->any())
+        <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4">
+            <ul class="text-red-400 text-sm space-y-1">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <div class="space-y-4">
+
+            {{-- Nombre --}}
             <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Consumo mensual (kWh)</label>
-                <input type="number" wire:model="datosBoleta.consumo_kwh"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
+                <label class="text-white/40 text-xs uppercase tracking-widest">Nombre completo *</label>
+                <input type="text" wire:model="datosBoleta.nombre_cliente"
+                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
             </div>
+
+            {{-- RUT --}}
             <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Región</label>
+                <label class="text-white/40 text-xs uppercase tracking-widest">RUT</label>
+                <input type="text" wire:model="datosBoleta.rut"
+                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
+            </div>
+
+            {{-- Dirección y comuna en fila --}}
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-white/40 text-xs uppercase tracking-widest">Dirección</label>
+                    <input type="text" wire:model="datosBoleta.direccion"
+                        class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
+                </div>
+                <div>
+                    <label class="text-white/40 text-xs uppercase tracking-widest">Comuna</label>
+                    <input type="text" wire:model="datosBoleta.comuna"
+                        class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
+                </div>
+            </div>
+
+            {{-- Región --}}
+            <div>
+                <label class="text-white/40 text-xs uppercase tracking-widest">Región *</label>
                 <select wire:model="datosBoleta.region"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
+                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
                     <option value="">Selecciona tu región</option>
-                    <option>Arica y Parinacota</option><option>Tarapacá</option><option>Antofagasta</option>
-                    <option>Atacama</option><option>Coquimbo</option><option>Valparaíso</option>
-                    <option>Metropolitana de Santiago</option><option>O'Higgins</option><option>Maule</option>
-                    <option>Ñuble</option><option>Biobío</option><option>La Araucanía</option>
-                    <option>Los Ríos</option><option>Los Lagos</option><option>Aysén</option><option>Magallanes</option>
+                    <option>Arica y Parinacota</option>
+                    <option>Tarapacá</option>
+                    <option>Antofagasta</option>
+                    <option>Atacama</option>
+                    <option>Coquimbo</option>
+                    <option>Valparaíso</option>
+                    <option>Metropolitana de Santiago</option>
+                    <option>O'Higgins</option>
+                    <option>Maule</option>
+                    <option>Ñuble</option>
+                    <option>Biobío</option>
+                    <option>La Araucanía</option>
+                    <option>Los Ríos</option>
+                    <option>Los Lagos</option>
+                    <option>Aysén</option>
+                    <option>Magallanes</option>
                 </select>
             </div>
-            <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Distribuidora</label>
-                <input type="text" wire:model="datosBoleta.distribuidora"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
+
+            {{-- Teléfono y email en fila --}}
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-white/40 text-xs uppercase tracking-widest">Teléfono *</label>
+                    <input type="tel" wire:model="datosBoleta.telefono"
+                        class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none"
+                        placeholder="+56 9 XXXX XXXX">
+                </div>
+                <div>
+                    <label class="text-white/40 text-xs uppercase tracking-widest">Email *</label>
+                    <input type="email" wire:model="datosBoleta.email"
+                        class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none"
+                        placeholder="correo@ejemplo.cl">
+                </div>
             </div>
-            <button wire:click="confirmarDatos"
-                class="w-full bg-[#0067FF] hover:bg-[#0050CC] text-white font-bold py-3 rounded-xl transition-colors">
-                Calcular sistema solar
+
+            {{-- Empresa --}}
+            <div>
+                <label class="text-white/40 text-xs uppercase tracking-widest">Empresa (opcional)</label>
+                <input type="text" wire:model="datosBoleta.empresa"
+                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
+            </div>
+
+            <button wire:click="confirmarDatos" wire:loading.attr="disabled"
+                class="w-full bg-[#0067FF] hover:bg-[#0050CC] text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50">
+                <span wire:loading.remove wire:target="confirmarDatos">Ver mi resultado solar</span>
+                <span wire:loading wire:target="confirmarDatos">Calculando…</span>
             </button>
+
             <button wire:click="$set('step', 1)" class="w-full text-white/40 text-sm hover:text-white/60 transition-colors">
                 ← Volver
             </button>
@@ -159,44 +225,8 @@
     </div>
     @endif
 
-    {{-- Step 4: Contacto --}}
+    {{-- Step 4: Resultado --}}
     @if($step === 4)
-    <div class="max-w-2xl mx-auto py-12 px-6">
-        <h2 class="text-white font-black text-xl mb-6">Tus datos de contacto</h2>
-        <div class="space-y-4">
-            <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Nombre *</label>
-                <input type="text" wire:model="nombre"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
-            </div>
-            <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Teléfono *</label>
-                <input type="tel" wire:model="telefono"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
-            </div>
-            <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Email</label>
-                <input type="email" wire:model="email"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
-            </div>
-            <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Empresa (opcional)</label>
-                <input type="text" wire:model="empresa"
-                    class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1">
-            </div>
-            <button wire:click="guardarContacto"
-                class="w-full bg-[#0D9488] hover:bg-[#0d8a7f] text-white font-bold py-3 rounded-xl transition-colors">
-                Ver mi resultado
-            </button>
-            <button wire:click="$set('step', 3)" class="w-full text-white/40 text-sm hover:text-white/60 transition-colors">
-                ← Volver
-            </button>
-        </div>
-    </div>
-    @endif
-
-    {{-- Step 5: Resultado --}}
-    @if($step === 5)
     <div class="max-w-2xl mx-auto py-12 px-6">
         <h2 class="text-white font-black text-xl mb-6">Tu sistema solar estimado</h2>
         <div class="bg-[#0d1e3a] border border-white/5 rounded-2xl p-6 space-y-4 mb-6">
