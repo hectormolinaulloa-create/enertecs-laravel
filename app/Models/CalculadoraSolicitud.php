@@ -8,8 +8,15 @@ use Illuminate\Support\Str;
 class CalculadoraSolicitud extends Model
 {
     protected $table    = 'calculadora_solicitudes';
-    protected $fillable = ['uuid', 'nombre', 'email', 'telefono', 'empresa', 'datos_boleta', 'resultado', 'pdf_path', 'estado'];
-    protected $casts    = ['datos_boleta' => 'array', 'resultado' => 'array'];
+    protected $fillable = [
+        'uuid', 'nombre', 'email', 'telefono', 'empresa',
+        'consentimiento', 'datos_boleta', 'resultado', 'pdf_path', 'estado',
+    ];
+    protected $casts = [
+        'datos_boleta'   => 'array',
+        'resultado'      => 'array',
+        'consentimiento' => 'boolean',
+    ];
 
     protected static function booted(): void
     {
