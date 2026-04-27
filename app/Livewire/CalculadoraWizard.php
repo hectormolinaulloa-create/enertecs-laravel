@@ -22,6 +22,7 @@ class CalculadoraWizard extends Component
     public array  $datosBoleta   = [];
     public array  $resultado     = [];
     public string $error         = '';
+    public bool $consentimiento = false;
 
     // Step 1 → sube PDF y despacha job
     public function subirPdf(): void
@@ -73,10 +74,11 @@ class CalculadoraWizard extends Component
             'datosBoleta.region'         => 'required|string',
             'datosBoleta.telefono'       => 'required|string|max:20',
             'datosBoleta.email'          => 'required|email:rfc|max:150',
+            'consentimiento'             => 'accepted',
         ]);
 
         try {
-            $calc           = app(OngridCalculator::class);
+            $calc            = app(OngridCalculator::class);
             $this->resultado = $calc->calcular([
                 'consumo_kwh'               => (float) ($this->datosBoleta['consumo_efectivo'] ?? $this->datosBoleta['consumo_kwh'] ?? 0),
                 'region'                    => $this->datosBoleta['region'] ?? 'Metropolitana de Santiago',
@@ -91,13 +93,15 @@ class CalculadoraWizard extends Component
             return;
         }
 
-        CalculadoraSolicitud::find($this->solicitudId)?->update([
-            'nombre'       => $this->datosBoleta['nombre_cliente'] ?? '',
-            'email'        => $this->datosBoleta['email'] ?? '',
-            'telefono'     => $this->datosBoleta['telefono'] ?? '',
-            'empresa'      => $this->datosBoleta['empresa'] ?? '',
-            'datos_boleta' => $this->datosBoleta,
-            'resultado'    => $this->resultado,
+        $solicitud = CalculadoraSolicitud::find($this->solicitudId);
+        $solicitud?->update([
+            'nombre'         => $this->datosBoleta['nombre_cliente'] ?? '',
+            'email'          => $this->datosBoleta['email'] ?? '',
+            'telefono'       => $this->datosBoleta['telefono'] ?? '',
+            'empresa'        => $this->datosBoleta['empresa'] ?? '',
+            'consentimiento' => $this->consentimiento,
+            'datos_boleta'   => $this->datosBoleta,
+            'resultado'      => $this->resultado,
         ]);
 
         $this->step = 4;
@@ -113,6 +117,7 @@ class CalculadoraWizard extends Component
         $this->datosBoleta   = [];
         $this->resultado     = [];
         $this->error         = '';
+        $this->consentimiento = false;
     }
 
     public function render()

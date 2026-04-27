@@ -213,6 +213,18 @@
                     class="w-full bg-[#0d1e3a] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0067FF] outline-none">
             </div>
 
+            {{-- Consentimiento --}}
+            <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" wire:model="consentimiento"
+                    class="mt-0.5 w-4 h-4 accent-[#0067FF] shrink-0">
+                <span class="text-white/60 text-xs leading-relaxed">
+                    Autorizo a Enertecs SpA a utilizar mis datos de contacto para hacerme llegar información sobre mi proyecto solar. *
+                </span>
+            </label>
+            @error('consentimiento')
+                <p class="text-red-400 text-xs">Debe aceptar el uso de sus datos para continuar.</p>
+            @enderror
+
             <button wire:click="confirmarDatos" wire:loading.attr="disabled"
                 class="w-full bg-[#0067FF] hover:bg-[#0050CC] text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50">
                 <span wire:loading.remove wire:target="confirmarDatos">Ver mi resultado solar</span>
