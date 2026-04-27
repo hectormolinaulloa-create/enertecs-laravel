@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proyecto extends Model
 {
-    protected $fillable = ['nombre', 'cliente', 'categoria', 'lat', 'lng', 'año', 'descripcion', 'activo'];
+    protected $fillable = ['nombre', 'cliente', 'mandante', 'categoria', 'lat', 'lng', 'año', 'region', 'comuna', 'direccion', 'descripcion', 'activo'];
     protected $casts    = ['activo' => 'boolean', 'lat' => 'float', 'lng' => 'float', 'año' => 'integer'];
 
     public function scopeActivo($query)

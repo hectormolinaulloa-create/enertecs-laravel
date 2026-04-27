@@ -16,7 +16,10 @@ Route::get('/api/vrm/chart', [CalculadoraController::class, 'vrmChart'])
      ->name('vrm.chart');
 
 // Endpoints de la calculadora
-Route::middleware('throttle:10,1')->group(function () {
+// Nota: la ruta Livewire /calculadora/solar-ongrid es gestionada por Livewire internamente;
+// el rate limiting de subida de PDF se controla desde el componente CalculadoraWizard.
+// El named limiter 'calculadora' (20 req/min por IP) está definido en AppServiceProvider.
+Route::middleware('throttle:calculadora')->group(function () {
     Route::get('/calculadora/job-status/{solicitud}', [CalculadoraController::class, 'jobStatus'])
          ->name('calculadora.job-status');
     Route::get('/calculadora/solar-ongrid/informe/{solicitud}', [CalculadoraController::class, 'descargarInforme'])

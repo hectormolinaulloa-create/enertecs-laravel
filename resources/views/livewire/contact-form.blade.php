@@ -2,8 +2,8 @@
     @if($enviado)
         <div class="text-center py-8">
             <p class="text-[#0D9488] font-bold text-lg mb-2">¡Mensaje enviado!</p>
-            <p class="text-white/40 text-sm">Te contactaremos a la brevedad.</p>
-            <button wire:click="$set('enviado', false)" class="mt-4 text-white/40 hover:text-white text-xs underline">Enviar otro mensaje</button>
+            <p class="text-white/60 text-sm">Te contactaremos a la brevedad.</p>
+            <button wire:click="$set('enviado', false)" class="mt-4 text-white/50 hover:text-white text-xs underline">Enviar otro mensaje</button>
         </div>
     @else
         @if($error)
@@ -11,20 +11,20 @@
         @endif
         <form wire:submit="enviar" class="space-y-4">
             <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Nombre *</label>
-                <input type="text" wire:model.blur="nombre"
+                <label for="cf-nombre" class="text-white/70 text-xs uppercase tracking-widest">Nombre *</label>
+                <input id="cf-nombre" type="text" wire:model.blur="nombre"
                     class="w-full bg-[#0a1628] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0D9488] focus:outline-none">
                 @error('nombre') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Email *</label>
-                <input type="email" wire:model.blur="email"
+                <label for="cf-email" class="text-white/70 text-xs uppercase tracking-widest">Email *</label>
+                <input id="cf-email" type="email" wire:model.blur="email"
                     class="w-full bg-[#0a1628] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0D9488] focus:outline-none">
                 @error('email') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="text-white/40 text-xs uppercase tracking-widest">Mensaje *</label>
-                <textarea wire:model.blur="mensaje" rows="5"
+                <label for="cf-mensaje" class="text-white/70 text-xs uppercase tracking-widest">Mensaje *</label>
+                <textarea id="cf-mensaje" wire:model.blur="mensaje" rows="5"
                     class="w-full bg-[#0a1628] border border-white/10 rounded-xl px-4 py-3 text-white mt-1 focus:border-[#0D9488] focus:outline-none"></textarea>
                 @error('mensaje') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
             </div>

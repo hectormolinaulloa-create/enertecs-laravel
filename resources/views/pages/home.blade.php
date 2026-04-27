@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Enertecs — Ingeniería Eléctrica en Patagonia')
+@section('description', 'Enertecs es una empresa de ingeniería eléctrica especializada en energía solar, minería y proyectos industriales en la Patagonia chilena y austral.')
 
 @push('scripts')
 <script>

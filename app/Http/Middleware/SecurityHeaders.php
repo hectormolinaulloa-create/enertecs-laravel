@@ -15,6 +15,9 @@ class SecurityHeaders
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
         $response->headers->set('X-XSS-Protection', '0');
         $response->headers->set('Content-Security-Policy', $this->buildCsp());
+        if (app()->isProduction()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        }
         return $response;
     }
 
@@ -27,9 +30,9 @@ class SecurityHeaders
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' {$vite}unpkg.com cdn.jsdelivr.net www.youtube.com www.youtube-nocookie.com s.ytimg.com; " .
             "style-src 'self' 'unsafe-inline' {$vite}fonts.googleapis.com unpkg.com; " .
             "font-src 'self' fonts.gstatic.com; " .
-            "img-src 'self' data: blob: *.openstreetmap.org *.cartocdn.com basemaps.cartocdn.com i.ytimg.com; " .
+            "img-src 'self' data: blob: *.openstreetmap.org *.cartocdn.com basemaps.cartocdn.com server.arcgisonline.com *.arcgisonline.com *.tile.opentopomap.org tiles.stadiamaps.com i.ytimg.com; " .
             "frame-src www.youtube.com www.youtube-nocookie.com; " .
-            "connect-src 'self' {$vite}" . ($vite ? str_replace('http://', 'ws://', $vite) : '') . "unpkg.com; " .
+            "connect-src 'self' {$vite}" . ($vite ? str_replace('http://', 'ws://', $vite) : '') . "unpkg.com cdn.jsdelivr.net; " .
             "frame-ancestors 'none';";
     }
 
