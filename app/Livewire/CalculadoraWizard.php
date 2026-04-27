@@ -127,6 +127,7 @@ class CalculadoraWizard extends Component
             'potencia_wp' => 405, 'eficiencia_pct' => 21.3,
             'v_oc' => 37.8, 'v_mpp' => 31.5, 'i_sc' => 13.85, 'i_mpp' => 12.86,
             'coef_temp_pmax' => -0.29, 'largo_mm' => 1722, 'ancho_mm' => 1134, 'alto_mm' => 30,
+            'peso_kg' => 21.3,
             'tipo' => 'bifacial', 'certificacion_sec' => true, 'activo' => true,
         ];
     }
