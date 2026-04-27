@@ -256,7 +256,8 @@
         $kwp           = $resultado['potencia_real_kwp'] ?? 0;
         $areaM2        = $resultado['area_m2'] ?? 0;
         $co2           = $resultado['co2_kg_anual'] ?? 0;
-        $waMsg         = rawurlencode("Hola Felipe, soy {$nombre} y acabo de ver mi análisis solar en Enertecs. Me gustaría conocer más sobre instalar paneles en mi hogar.");
+        $ahorroFmt     = number_format($ahorro, 0, ',', '.');
+        $waMsg         = rawurlencode("Hola Felipe, soy {$nombre} y acabo de ver mi análisis solar en Enertecs. Mi ahorro estimado es de \${$ahorroFmt}/mes. Me gustaría conocer más sobre instalar paneles en mi hogar.");
         $waUrl         = "https://wa.me/56935165830?text={$waMsg}";
     @endphp
     <div class="max-w-md mx-auto pb-10">
