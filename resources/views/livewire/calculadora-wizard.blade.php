@@ -70,41 +70,42 @@
         <div class="max-w-2xl mx-auto border-t border-white/10 mb-8"></div>
 
         {{-- Upload widget --}}
-        <div class="w-full max-w-lg mx-auto">
+        <div class="w-full max-w-lg mx-auto"
+             x-data="{ dragging: false }"
+             x-on:livewire-upload-finish="$wire.subirPdf()">
+
             <h2 class="text-2xl font-black text-white mb-2 text-center">Sube tu boleta eléctrica</h2>
             <p class="text-white/50 text-sm text-center mb-8">La IA extraerá automáticamente todos los datos necesarios</p>
 
-            <form wire:submit="subirPdf" x-data="{ dragging: false }">
-                <div
-                    x-on:dragover.prevent="dragging = true"
-                    x-on:dragleave="dragging = false"
-                    x-on:drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; $refs.fileInput.dispatchEvent(new Event('change'))"
-                    x-on:click="$refs.fileInput.click()"
-                    class="border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all"
-                    :class="dragging ? 'border-[#0067FF] bg-[#0067FF]/10' : 'border-white/20 hover:border-white/40'">
+            <div
+                x-on:dragover.prevent="dragging = true"
+                x-on:dragleave="dragging = false"
+                x-on:drop.prevent="dragging = false; $refs.fileInput.files = $event.dataTransfer.files; $refs.fileInput.dispatchEvent(new Event('change'))"
+                x-on:click="$refs.fileInput.click()"
+                class="border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all"
+                :class="dragging ? 'border-[#0067FF] bg-[#0067FF]/10' : 'border-white/20 hover:border-white/40'">
 
-                    <input x-ref="fileInput" type="file" wire:model="pdf" accept=".pdf" class="hidden" id="pdf-input">
+                <input x-ref="fileInput" type="file" wire:model="pdf" accept=".pdf" class="hidden" id="pdf-input">
 
-                    <div wire:loading wire:target="subirPdf" class="space-y-3">
-                        <div class="w-8 h-8 border-2 border-[#0067FF] border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p class="text-white/60 text-sm">Analizando boleta con IA…</p>
-                    </div>
-                    <div wire:loading.remove wire:target="subirPdf" class="space-y-3">
-                        <div class="text-4xl">📄</div>
-                        <p class="text-white font-bold">
-                            @if($pdf) {{ $pdf->getClientOriginalName() }}
-                            @else Arrastra tu boleta PDF aquí @endif
-                        </p>
-                        <p class="text-white/40 text-sm">{{ $pdf ? 'Listo para analizar' : 'o haz clic para seleccionar' }}</p>
-                    </div>
+                {{-- Subiendo archivo al servidor --}}
+                <div wire:loading wire:target="pdf" class="space-y-3">
+                    <div class="w-8 h-8 border-2 border-white/40 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p class="text-white/60 text-sm">Subiendo archivo…</p>
                 </div>
-
-                <button type="submit" wire:loading.attr="disabled" wire:target="subirPdf"
-                    class="w-full mt-4 bg-[#0067FF] hover:bg-[#0050CC] text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50">
-                    <span wire:loading.remove wire:target="subirPdf">Analizar boleta con IA</span>
-                    <span wire:loading wire:target="subirPdf">Analizando…</span>
-                </button>
-            </form>
+                {{-- Iniciando análisis --}}
+                <div wire:loading wire:target="subirPdf" class="space-y-3">
+                    <div class="w-8 h-8 border-2 border-[#0067FF] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p class="text-white/60 text-sm">Iniciando análisis con IA…</p>
+                </div>
+                {{-- Estado en reposo --}}
+                <div wire:loading.remove wire:target="pdf"
+                     wire:loading.remove wire:target="subirPdf"
+                     class="space-y-3">
+                    <div class="text-4xl">📄</div>
+                    <p class="text-white font-bold">Arrastra tu boleta PDF aquí</p>
+                    <p class="text-white/40 text-sm">o haz clic para seleccionar</p>
+                </div>
+            </div>
         </div>
     </div>
     @endif
