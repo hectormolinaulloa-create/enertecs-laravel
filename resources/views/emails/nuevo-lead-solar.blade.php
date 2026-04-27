@@ -24,7 +24,7 @@ td:last-child { font-weight: 600; }
 
   <div class="header">
     <h1>Nuevo lead solar — Enertecs SpA</h1>
-    <p>Análisis completado el {{ now()->format('d/m/Y H:i') }}</p>
+    <p>Análisis completado el {{ $solicitud->updated_at->format('d/m/Y H:i') }}</p>
   </div>
 
   @php
@@ -62,7 +62,11 @@ td:last-child { font-weight: 600; }
   </table>
 
   <div class="nota">
+    @if($solicitud->consentimiento)
     ✅ El cliente autorizó el uso de sus datos de contacto para recibir información sobre su proyecto solar.
+    @else
+    ⚠️ El cliente <strong>no autorizó</strong> el uso de sus datos de contacto.
+    @endif
   </div>
 
   <div class="footer">
