@@ -175,6 +175,12 @@ class OngridCalculator
         $co2KgAnual        = $produccionMensual * 12 * self::FACTOR_CO2;
         $areaM2            = $nPaneles * (($panel['largo_mm'] ?? 1722) / 1000) * (($panel['ancho_mm'] ?? 1134) / 1000);
 
+        $costoSinSolar = round($consumo * $precioKwh);
+        $costoConSolar = max(0, round($costoSinSolar - $ahorroMensual));
+        $pctReduccion  = $costoSinSolar > 0
+            ? min(100, (int) round($ahorroMensual / $costoSinSolar * 100))
+            : 0;
+
         return [
             'potencia_sistema_kwp'   => round($potenciaSistema, 4),
             'n_paneles'              => $nPaneles,
@@ -186,6 +192,9 @@ class OngridCalculator
             'n_strings'              => $nStrings,
             'produccion_mensual_kwh' => round($produccionMensual, 2),
             'ahorro_mensual_clp'     => round($ahorroMensual),
+            'costo_sin_solar_clp'    => $costoSinSolar,
+            'costo_con_solar_clp'    => $costoConSolar,
+            'porcentaje_reduccion'   => $pctReduccion,
             'roi_anos'               => round($roiAnos, 2),
             'co2_kg_anual'           => round($co2KgAnual),
             'area_m2'                => round($areaM2, 2),
