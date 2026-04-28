@@ -5,10 +5,10 @@ deployment:
     - export PUBPATH=$HOME/public_html
     - /bin/cp -f $DEPLOYPATH/deploy/public_html/index.php $PUBPATH/index.php
     - /bin/cp -f $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
-    - /bin/rm -rf $PUBPATH/build && /bin/cp -rf $DEPLOYPATH/public/build $PUBPATH/build
-    - /bin/rm -rf $PUBPATH/css && /bin/cp -rf $DEPLOYPATH/public/css $PUBPATH/css
-    - /bin/rm -rf $PUBPATH/js && /bin/cp -rf $DEPLOYPATH/public/js $PUBPATH/js
-    - /bin/rm -rf $PUBPATH/images && /bin/cp -rf $DEPLOYPATH/public/images $PUBPATH/images
+    - /bin/mkdir -p $PUBPATH/build && /bin/cp -rf $DEPLOYPATH/public/build/. $PUBPATH/build/
+    - /bin/mkdir -p $PUBPATH/css && /bin/cp -rf $DEPLOYPATH/public/css/. $PUBPATH/css/
+    - /bin/mkdir -p $PUBPATH/js && /bin/cp -rf $DEPLOYPATH/public/js/. $PUBPATH/js/
+    - /bin/mkdir -p $PUBPATH/images && /bin/cp -rf $DEPLOYPATH/public/images/. $PUBPATH/images/
     - /bin/cp -f $DEPLOYPATH/public/favicon.ico $PUBPATH/favicon.ico
     - /bin/cp -f $DEPLOYPATH/public/logo.png $PUBPATH/logo.png
     - /bin/cp -f $DEPLOYPATH/public/robots.txt $PUBPATH/robots.txt
