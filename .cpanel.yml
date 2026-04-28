@@ -1,7 +1,12 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/$USER/enertecs-laravel
+    - export DEPLOYPATH=$HOME/enertecs-laravel
+    - export PUBPATH=$HOME/public_html
+    - /bin/cp $DEPLOYPATH/deploy/public_html/index.php $PUBPATH/index.php
+    - /bin/cp $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
+    - ln -sfn $DEPLOYPATH/public/build $PUBPATH/build
+    - ln -sfn $DEPLOYPATH/storage/app/public $PUBPATH/storage
     - cd $DEPLOYPATH && php artisan config:cache
     - cd $DEPLOYPATH && php artisan route:cache
     - cd $DEPLOYPATH && php artisan view:cache
