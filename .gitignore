@@ -1,6 +1,6 @@
 /.phpunit.cache
 /node_modules
-/public/build
+# /public/build — committed to repo for shared hosting deploy (no npm in production)
 /public/hot
 /public/storage
 /storage/*.key
@@ -23,8 +23,8 @@ yarn-error.log
 /.zed
 
 storage/app/boletas-tmp/
-/public/css/filament/
-/public/js/filament/
+# /public/css/filament/ — committed to repo for shared hosting deploy
+# /public/js/filament/  — committed to repo for shared hosting deploy
 
 # Herramientas locales
 /.claude/
