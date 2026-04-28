@@ -4,8 +4,10 @@ namespace App\Livewire;
 
 use App\Services\VrmClient;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
+#[Lazy]
 class VrmDashboard extends Component
 {
     public array  $snapshot  = [];
@@ -28,7 +30,7 @@ class VrmDashboard extends Component
     ];
 
     private const CO2_FACTOR = 0.4;
-    private const CACHE_TTL  = 300; // 5 minutos
+    private const CACHE_TTL  = 1800; // 30 minutos
 
     public static function getWhitelist(): array { return self::WHITELIST; }
 
@@ -172,6 +174,15 @@ class VrmDashboard extends Component
             'trend30d'      => $trend30d,
             'instalaciones' => $instalaciones,
         ];
+    }
+
+    public function placeholder(): string
+    {
+        return <<<'HTML'
+        <div class="py-16 text-center text-white/40 text-sm tracking-widest animate-pulse">
+            CARGANDO DATOS EN VIVO…
+        </div>
+        HTML;
     }
 
     public function render()
