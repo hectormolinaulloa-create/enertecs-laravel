@@ -33,4 +33,4 @@ Route::get('/run-migrations', function (\Illuminate\Http\Request $request) {
     abort_unless($request->get('token') === config('app.migration_token'), 403);
     \Artisan::call('migrate', ['--seed' => true, '--force' => true]);
     return \Artisan::output();
-})->middleware('throttle:1,60');
+});
