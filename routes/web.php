@@ -3,20 +3,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaginaController;
 use App\Http\Controllers\CalculadoraController;
 
-Route::get('/git-status', function () {
-    if (request('token') !== config('app.migration_token')) abort(403);
-    $base = base_path();
-    $out = shell_exec("cd {$base} && git status 2>&1");
-    return response("<pre>{$out}</pre>", 200)->header('Content-Type', 'text/html');
-});
-
-Route::get('/git-reset', function () {
-    if (request('token') !== config('app.migration_token')) abort(403);
-    $base = base_path();
-    $out = shell_exec("cd {$base} && git checkout -- . 2>&1 && git clean -fd 2>&1");
-    return response("<pre>{$out}</pre>", 200)->header('Content-Type', 'text/html');
-});
-
 Route::get('/', [PaginaController::class, 'home'])->name('home');
 Route::get('/nosotros', [PaginaController::class, 'nosotros'])->name('nosotros');
 Route::get('/experiencia', [PaginaController::class, 'experiencia'])->name('experiencia');
