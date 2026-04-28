@@ -6,13 +6,14 @@ deployment:
     - /bin/cp -f $DEPLOYPATH/deploy/public_html/index.php $PUBPATH/index.php
     - /bin/cp -f $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
     - /bin/cp -rf $DEPLOYPATH/public/build $PUBPATH/build
-    - /bin/cp -rf $DEPLOYPATH/public/css $PUBPATH/css
-    - /bin/cp -rf $DEPLOYPATH/public/js $PUBPATH/js
     - /bin/cp -rf $DEPLOYPATH/public/images $PUBPATH/images
     - /bin/cp -f $DEPLOYPATH/public/favicon.ico $PUBPATH/favicon.ico
     - /bin/cp -f $DEPLOYPATH/public/logo.png $PUBPATH/logo.png
     - /bin/cp -f $DEPLOYPATH/public/robots.txt $PUBPATH/robots.txt
     - mkdir -p $PUBPATH/storage
     - cd $DEPLOYPATH && php artisan optimize:clear
+    - cd $DEPLOYPATH && php artisan filament:assets
+    - /bin/cp -rf $DEPLOYPATH/public/css $PUBPATH/css
+    - /bin/cp -rf $DEPLOYPATH/public/js $PUBPATH/js
     - cd $DEPLOYPATH && php artisan config:cache
     - cd $DEPLOYPATH && php artisan view:cache
