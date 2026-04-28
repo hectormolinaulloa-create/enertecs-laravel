@@ -7,6 +7,6 @@ deployment:
     - /bin/cp $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
     - ln -sfn $DEPLOYPATH/public/build $PUBPATH/build
     - ln -sfn $DEPLOYPATH/storage/app/public $PUBPATH/storage
+    - cd $DEPLOYPATH && php artisan optimize:clear
     - cd $DEPLOYPATH && php artisan config:cache
-    - cd $DEPLOYPATH && php artisan route:cache
     - cd $DEPLOYPATH && php artisan view:cache
