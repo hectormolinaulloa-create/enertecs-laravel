@@ -6,6 +6,12 @@ deployment:
     - /bin/cp $DEPLOYPATH/deploy/public_html/index.php $PUBPATH/index.php
     - /bin/cp $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
     - ln -sfn $DEPLOYPATH/public/build $PUBPATH/build
+    - ln -sfn $DEPLOYPATH/public/css $PUBPATH/css
+    - ln -sfn $DEPLOYPATH/public/js $PUBPATH/js
+    - ln -sfn $DEPLOYPATH/public/images $PUBPATH/images
+    - ln -sf $DEPLOYPATH/public/favicon.ico $PUBPATH/favicon.ico
+    - ln -sf $DEPLOYPATH/public/logo.png $PUBPATH/logo.png
+    - ln -sf $DEPLOYPATH/public/robots.txt $PUBPATH/robots.txt
     - ln -sfn $DEPLOYPATH/storage/app/public $PUBPATH/storage
     - cd $DEPLOYPATH && php artisan optimize:clear
     - cd $DEPLOYPATH && php artisan config:cache
