@@ -25,3 +25,12 @@ yarn-error.log
 storage/app/boletas-tmp/
 /public/css/filament/
 /public/js/filament/
+
+# Herramientas locales
+/.claude/
+/.superpowers/
+build.zip
+vendor.zip
+
+# Documentos de referencia (datos ya migrados a seeders)
+/docs/
