@@ -26,11 +26,3 @@ Route::middleware('throttle:calculadora')->group(function () {
          ->name('calculadora.informe');
 });
 
-// Ruta temporal de migraciones — eliminar tras primer deploy exitoso
-Route::get('/run-migrations', function (\Illuminate\Http\Request $request) {
-    abort_unless(app()->environment('production'), 404);
-    abort_if(empty(config('app.migration_token')), 404);
-    abort_unless($request->get('token') === config('app.migration_token'), 403);
-    \Artisan::call('migrate', ['--seed' => true, '--force' => true]);
-    return \Artisan::output();
-});
