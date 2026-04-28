@@ -3,16 +3,16 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/enertecs-laravel
     - export PUBPATH=$HOME/public_html
-    - /bin/cp $DEPLOYPATH/deploy/public_html/index.php $PUBPATH/index.php
-    - /bin/cp $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
-    - ln -sfn $DEPLOYPATH/public/build $PUBPATH/build
-    - ln -sfn $DEPLOYPATH/public/css $PUBPATH/css
-    - ln -sfn $DEPLOYPATH/public/js $PUBPATH/js
-    - ln -sfn $DEPLOYPATH/public/images $PUBPATH/images
-    - ln -sf $DEPLOYPATH/public/favicon.ico $PUBPATH/favicon.ico
-    - ln -sf $DEPLOYPATH/public/logo.png $PUBPATH/logo.png
-    - ln -sf $DEPLOYPATH/public/robots.txt $PUBPATH/robots.txt
-    - ln -sfn $DEPLOYPATH/storage/app/public $PUBPATH/storage
+    - /bin/cp -f $DEPLOYPATH/deploy/public_html/index.php $PUBPATH/index.php
+    - /bin/cp -f $DEPLOYPATH/public/.htaccess $PUBPATH/.htaccess
+    - /bin/cp -rf $DEPLOYPATH/public/build $PUBPATH/build
+    - /bin/cp -rf $DEPLOYPATH/public/css $PUBPATH/css
+    - /bin/cp -rf $DEPLOYPATH/public/js $PUBPATH/js
+    - /bin/cp -rf $DEPLOYPATH/public/images $PUBPATH/images
+    - /bin/cp -f $DEPLOYPATH/public/favicon.ico $PUBPATH/favicon.ico
+    - /bin/cp -f $DEPLOYPATH/public/logo.png $PUBPATH/logo.png
+    - /bin/cp -f $DEPLOYPATH/public/robots.txt $PUBPATH/robots.txt
+    - mkdir -p $PUBPATH/storage
     - cd $DEPLOYPATH && php artisan optimize:clear
     - cd $DEPLOYPATH && php artisan config:cache
     - cd $DEPLOYPATH && php artisan view:cache
